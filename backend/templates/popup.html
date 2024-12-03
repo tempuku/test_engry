@@ -1,0 +1,44 @@
+<div class="modal-body pt-0 px-0 px-sm-3">
+            <div class="header-container">
+            <div class="title">
+    <h3 class="text-success text-shadow-1">Вход на сайт</h3>
+    </div>
+        <button id="close-popup" class="btn">Close</button></div><div class="card card-body">
+                <p>После нажатия кнопки вы перейдете в диалог с нашим ботом <b>@test_reg_engry_bot</b>.</p>
+                <p>В диалоге с ботом нажмите кнопку <b>Start</b></p>
+                <div class="d-flex justify-content-center">
+                  <a href="https://t.me/tg_analytics_bot?start={{ token.value }}" data-telegram-auth-button="{{ token.value }}" role="button" target="_blank" class="btn btn-primary auth-btn">
+                        <i class="uil uil-telegram"></i><span>&nbsp; Войти через Telegram</span>
+                    </a>
+                </div>
+            </div>
+    <script>
+      const closePopup = $("#close-popup");
+      const loginPopup = $("#login-popup");
+      closePopup.click(function () {
+          loginPopup.addClass("hidden");
+      });
+     $(document).on("click", ".auth-btn", function (e) {
+        let token = $(this).data("telegram-auth-button"); 
+        let interval;
+        function pollAuthStatus() {
+            $.ajax({
+                type: "POST",
+                url: "/auth/",
+                data: JSON.stringify({ auth_key: token }), 
+                contentType: "application/json", 
+                success: function (response) {
+                    if (response.status === "auth") {
+                        
+                        clearInterval(interval);
+                        location.reload();
+                    }
+                },
+                error: function () {
+                    clearInterval(interval); 
+                }
+            });
+        }
+        interval = setInterval(pollAuthStatus, 2000);
+    });</script>
+        </div>

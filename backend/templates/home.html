@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'engry/css/home.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <button id="login-button" class="btn">Log In</button>
+        </div>
+    </header>
+    <!-- Main Content -->
+    <main>
+        <p class="center-text">{{ user_message }}</p>
+    </main>
+    <!-- Login Popup -->
+    <div id="login-popup" class="modal hidden">
+        <div id="popup-content"></div>
+    </div>
+    <!-- JavaScript for handling login popup -->
+    <script>
+        $(document).ready(function () {
+            const loginButton = $("#login-button");
+            const loginPopup = $("#login-popup");
+            const popupContent = $("#popup-content");
+            let popupLoaded = false;
+            loginButton.click(function () {
+                if (!popupLoaded){ 
+                    $.ajax({
+                        url: "{% url 'login' %}",
+                        method: "GET",
+                        success: function (response) {
+                            if (response.status === "ok") {
+                                popupContent.html(response.html);
+                                loginPopup.removeClass("hidden");
+                                popupLoaded = true;
+                            }
+                        }
+                    });
+                }
+                else {
+                  loginPopup.removeClass("hidden");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
